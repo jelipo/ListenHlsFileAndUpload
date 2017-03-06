@@ -50,8 +50,11 @@ public class UploadThread implements Runnable {
             if (videoTime == null) {
                 continue;
             }
+            String fileName=file.getName();
+            String num=fileName.replace(".ts","");
+            String foramtTime=getFormatTime(videoTime);
             String fileUrl = this.uploadFile.coverSimpleUpload(file, "hls/" + file.getName());
-            send(file.getName(), fileUrl,videoTime);
+            send(fileName, fileUrl,videoTime,num,foramtTime);
 
         }
     }
@@ -80,14 +83,29 @@ public class UploadThread implements Runnable {
         m3u8.close();
         String fileName = file.getName();
         int start = result.indexOf(fileName);
-
-        if (start < 60) {
-            System.out.println("在m3u8文件中未发现:" + fileName);
-        } else {
-            String time = result.substring(start - 8, start - 2);
-            return time;
+        for(;start>0;start--){
+            if (result.charAt(start)==','){
+                int timeStop=start;
+                for (int i=0;i<20;i++){
+                    if (result.charAt(start)==':'){
+                        return result.substring(++start,timeStop);
+                    }
+                    start--;
+                }
+                break;
+            }
         }
         return null;
+    }
+
+    /**
+     * 根据ts视频的时间向上取整
+     * @param videoTime
+     * @return
+     */
+    private String getFormatTime(String videoTime){
+        float time=Float.valueOf(videoTime);
+        return String.valueOf(Math.ceil(time));
     }
 
     /**
@@ -96,11 +114,13 @@ public class UploadThread implements Runnable {
      * @param fileName ts文件的名称，
      * @param fileUrl  ts文件在cdn的url
      */
-    private void send(String fileName, String fileUrl,String videoTime) {
+    private void send(String fileName, String fileUrl,String videoTime,String num,String formatTime) {
         RequestBody formBody = new FormBody.Builder()
                 .add("fileUrl", fileUrl)
                 .add("fileName", fileName)
                 .add("videoTime", videoTime)
+                .add("num",num)
+                .add("formatTime",formatTime)
                 .add("some", this.some)
                 .build();
         Request request = new Request.Builder()
@@ -109,7 +129,7 @@ public class UploadThread implements Runnable {
                 .build();
         try {
             Response response = this.httpClient.newCall(request).execute();
-            System.out.println(response.isSuccessful()?"发送成功！结果"+response.body().string():"wrong：发送失败！");
+            System.out.println(response.isSuccessful()?"发送成功！结果"+response.body().string() : "wrong：发送失败！结果"+response.body().string());
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("发送失败" + fileName);
