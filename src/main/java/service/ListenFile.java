@@ -28,7 +28,7 @@ public class ListenFile extends FileAlterationListenerAdaptor {
         long fileSize=0;
         while(true){
             try {
-                Thread.sleep(2000);
+                Thread.sleep(800);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

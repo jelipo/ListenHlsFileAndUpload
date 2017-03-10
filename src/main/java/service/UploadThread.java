@@ -36,7 +36,7 @@ public class UploadThread implements Runnable {
             File file = null;
             try {
                 file = this.queue.take();
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 System.out.println("从队列中取得数据失败");
                 continue;
@@ -105,7 +105,7 @@ public class UploadThread implements Runnable {
      */
     private String getFormatTime(String videoTime){
         float time=Float.valueOf(videoTime);
-        return String.valueOf(Math.ceil(time));
+        return String.valueOf((int)Math.ceil(time));
     }
 
     /**

@@ -4,12 +4,9 @@ import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import other.GetConfigParm;
 import service.ListenFile;
-import service.UploadThread;
+import service.MainConnectQueueCtrl;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +14,16 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        start();
+
+        BlockingQueue<String> mainQueue = new LinkedBlockingQueue(10);
+        MainConnectQueueCtrl mainConnectQueueCtrl=new MainConnectQueueCtrl(mainQueue);
+        Thread thread=new Thread(mainConnectQueueCtrl);
+        thread.start();
+
+        //向队列发送消息，是其连接服务器
+        mainQueue.put("connectServer");
+
+//        //start();
 //        BlockingQueue<File> queue = new LinkedBlockingQueue(10);
 //        String floderPath=getHlsPath();
 //        //开始文件上传线程
