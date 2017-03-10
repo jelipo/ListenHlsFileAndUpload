@@ -5,6 +5,7 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
 import other.GetConfigParm;
 import service.ListenFile;
 import service.MainConnectQueueCtrl;
+import service.UploadThread;
 
 import java.io.File;
 import java.util.concurrent.BlockingQueue;
@@ -19,19 +20,17 @@ public class Main {
         MainConnectQueueCtrl mainConnectQueueCtrl=new MainConnectQueueCtrl(mainQueue);
         Thread thread=new Thread(mainConnectQueueCtrl);
         thread.start();
-
         //向队列发送消息，是其连接服务器
         mainQueue.put("connectServer");
 
-//        //start();
-//        BlockingQueue<File> queue = new LinkedBlockingQueue(10);
-//        String floderPath=getHlsPath();
-//        //开始文件上传线程
-//        Thread uploadThread=new Thread(new UploadThread(queue,floderPath));
-//        System.out.println("1");
-//        uploadThread.start();
-//        //开始监听文件变更线程
-//        startListen(queue,floderPath);
+        BlockingQueue<File> queue = new LinkedBlockingQueue(10);
+        String floderPath=getHlsPath();
+        //开始文件上传线程
+        Thread uploadThread=new Thread(new UploadThread(queue,floderPath));
+        System.out.println("1");
+        uploadThread.start();
+        //开始监听文件变更线程
+        startListen(queue,floderPath);
     }
 
 

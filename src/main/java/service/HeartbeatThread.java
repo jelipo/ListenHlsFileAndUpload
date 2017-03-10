@@ -1,7 +1,5 @@
 package service;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
@@ -27,7 +25,7 @@ public class HeartbeatThread implements Runnable {
                 return;
             }
             try {
-                Thread.sleep(10000);
+                Thread.sleep(30000);
                 System.out.println("heart");
                 SocketTool.send(socket,"I'm client");
             } catch (InterruptedException e) {
