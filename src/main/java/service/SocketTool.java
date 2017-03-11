@@ -82,11 +82,11 @@ public class SocketTool {
      * @return
      */
     public static String getMessage(BufferedInputStream br) throws IOException {
+        int single = 0;
         synchronized (br) {
             while (true) {
-                int first = br.read();
-                if (first == -1) throw new IOException();
-                if (first != headFlagByte[0]) continue;
+                if ((single = br.read()) == -1) throw new IOException("socket连接断开");
+                if (single != headFlagByte[0]) continue;
                 if (br.read() != headFlagByte[1]) continue;
                 if (br.read() != headFlagByte[2]) continue;
                 int length = 0;
@@ -94,7 +94,7 @@ public class SocketTool {
                     length += getNumberByAscii(br.read()) * numTable[i - 1];
                 }
                 byte[] resultChar = new byte[length];
-                if (br.read(resultChar, 0, length) == -1) throw new IOException();
+                if (br.read(resultChar, 0, length) == -1) throw new IOException("socket连接断开");
                 return new String(resultChar, "UTF-8");
             }
         }

@@ -43,7 +43,6 @@ public class MainConnectQueueCtrl implements Runnable {
             default:
                 System.out.println("未找到命令" + needTo);
                 break;
-
         }
     }
 
@@ -63,6 +62,7 @@ public class MainConnectQueueCtrl implements Runnable {
         int serverPort = Integer.valueOf(GetConfigParm.get("switch.serverPort"));
         try {
             this.socket = new Socket(serverIp, serverPort);
+            socket.setKeepAlive(true);
             ConnectThread connectThread = new ConnectThread(socket, queue);
             Thread thread = new Thread(connectThread, "ServerThread");
             thread.start();
