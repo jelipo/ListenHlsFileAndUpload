@@ -22,7 +22,6 @@ public class ConnectThread implements Runnable {
     @Override
     public void run() {
         try {
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             System.out.println("向服务器发送第一次消息");
             SocketTool.send(socket, "I'm client");
             BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
