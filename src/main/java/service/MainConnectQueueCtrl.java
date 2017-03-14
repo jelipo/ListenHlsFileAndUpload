@@ -14,6 +14,7 @@ public class MainConnectQueueCtrl implements Runnable {
 
     private BlockingQueue<String> queue;
     private Socket socket;
+    private long lastConnectTime=0;
 
     public MainConnectQueueCtrl(BlockingQueue<String> queue) {
         this.queue = queue;
@@ -40,6 +41,8 @@ public class MainConnectQueueCtrl implements Runnable {
             case "switch":
                 switchLED();
                 break;
+            case "checkLastConnect":
+
             default:
                 System.out.println("未找到命令" + needTo);
                 break;
@@ -87,6 +90,18 @@ public class MainConnectQueueCtrl implements Runnable {
     private void switchLED() {
         System.out.println("开/关");
         pin.toggle();
+    }
+
+    private void checkLastConnect(){
+        long nowTime=System.currentTimeMillis();
+        if (lastConnectTime==0){
+            lastConnectTime=nowTime;
+            return;
+        }
+        long differenceTime=nowTime-lastConnectTime;
+        if (differenceTime>30000){
+
+        }
     }
 
     protected class PackegSocket {
