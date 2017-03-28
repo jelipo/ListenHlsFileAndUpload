@@ -18,40 +18,42 @@ import java.util.Map;
 public class SimpleTools {
 
 
-    public FileInfo[] getCdnFileListByAuth(String bucketName, String prefix, String a, String b) throws QiniuException {
-        Auth auth = Auth.create(a, b);
-        return getFileListing(auth, bucketName, prefix, null, 100, null);
+    public FileInfo[] getCdnFileList(String bucketName, String prefix, String accessKey, String secretKey) throws QiniuException {
+        Auth auth = Auth.create(accessKey, secretKey);
+        return getFileListing(auth, bucketName, prefix, null, 900, null);
 
     }
 
     /**
      * 根据文件前缀，获得CDN中的文件数组
-     * @param auth 由七牛公钥和私钥所组成的Auth对象
+     *
+     * @param auth       由七牛公钥和私钥所组成的Auth对象
      * @param bucketName cdn存储空间的名称
-     * @param prefix 文件名前缀
-     * @param delimiter 指定目录分隔符，列出所有公共前缀（模拟列出目录效果）。缺省值为空字符串
+     * @param prefix     文件名前缀
+     * @param delimiter  指定目录分隔符，列出所有公共前缀（模拟列出目录效果）。缺省值为空字符串
      * @return 返回获FileInfo的数组
      * @throws QiniuException
      */
-    public FileInfo[] getCdnFileListByAuth(Auth auth, String bucketName, String prefix,  String delimiter) throws QiniuException {
-        return getFileListing(auth, bucketName, prefix, null, 100, delimiter);
+    public FileInfo[] getCdnFileListByAuth(Auth auth, String bucketName, String prefix, String delimiter) throws QiniuException {
+        return getFileListing(auth, bucketName, prefix, null, 900, delimiter);
     }
 
     /**
      * 调用getList方法，将返回的List中FileListing的所有结果放入数组中，并返回
-     * @param auth 由七牛公钥和私钥所组成的Auth对象
+     *
+     * @param auth       由七牛公钥和私钥所组成的Auth对象
      * @param bucketName cdn存储空间的名称
-     * @param prefix 文件名前缀
-     * @param marker 上一次获取文件列表时返回的 marker
-     * @param limit 每次迭代的长度限制，七牛官方说明：最大1000，推荐值 100
-     * @param delimiter 指定目录分隔符，列出所有公共前缀（模拟列出目录效果）。缺省值为空字符串
+     * @param prefix     文件名前缀
+     * @param marker     上一次获取文件列表时返回的 marker
+     * @param limit      每次迭代的长度限制，七牛官方说明：最大1000，推荐值 100
+     * @param delimiter  指定目录分隔符，列出所有公共前缀（模拟列出目录效果）。缺省值为空字符串
      * @return 返回根据文件前缀所获得的所有文件数组
      */
     private FileInfo[] getFileListing(Auth auth, String bucketName, String prefix, String marker, int limit, String delimiter) {
-        List<FileListing> list=getList(new ArrayList(), auth, bucketName, prefix, marker, limit, delimiter);
-        FileInfo[] fileInfos=list.get(0).items;
-        for (int i=1;i<list.size();i++){
-            fileInfos=ArrayUtils.addAll(fileInfos, list.get(i).items);
+        List<FileListing> list = getList(new ArrayList(), auth, bucketName, prefix, marker, limit, delimiter);
+        FileInfo[] fileInfos = list.get(0).items;
+        for (int i = 1; i < list.size(); i++) {
+            fileInfos = ArrayUtils.addAll(fileInfos, list.get(i).items);
         }
         return fileInfos;
     }
@@ -60,13 +62,14 @@ public class SimpleTools {
     /**
      * 使用七牛的SDK向服务器获取文件信息列表，当单次请求大于等于limit参数时，会迭代开始请求下一次请求，每次迭代结果都放入List中，
      * 迭代完成时返回所有迭代结果所集成的List
-     * @param list 迭代时共有的对象，每次结果都放入此List
-     * @param auth 由七牛公钥和私钥所组成的Auth对象
+     *
+     * @param list       迭代时共有的对象，每次结果都放入此List
+     * @param auth       由七牛公钥和私钥所组成的Auth对象
      * @param bucketName cdn存储空间的名称
-     * @param prefix 文件名前缀
-     * @param marker 上一次获取文件列表时返回的 marker
-     * @param limit 每次迭代的长度限制，七牛官方说明：最大1000，推荐值 100
-     * @param delimiter 指定目录分隔符，列出所有公共前缀（模拟列出目录效果）。缺省值为空字符串
+     * @param prefix     文件名前缀
+     * @param marker     上一次获取文件列表时返回的 marker
+     * @param limit      每次迭代的长度限制，七牛官方说明：最大1000，推荐值 100
+     * @param delimiter  指定目录分隔符，列出所有公共前缀（模拟列出目录效果）。缺省值为空字符串
      * @return
      */
     private List<FileListing> getList(List list, Auth auth, String bucketName, String prefix, String marker, int limit, String delimiter) {
@@ -95,10 +98,11 @@ public class SimpleTools {
 
     /**
      * 类似于工具方法，将FileInfo数组中的每个FileInfo的“key”变量作为Map的key，再把FileInfo作为Value，放入Map。
+     *
      * @param fileInfos FileInfo数组
      * @return 返回FileInfo的Map
      */
-    public Map<String,FileInfo> FileInfoArray2MapByKey(FileInfo[] fileInfos) {
+    public Map<String, FileInfo> FileInfoArray2MapByKey(FileInfo[] fileInfos) {
         Map<String, FileInfo> map = new HashMap<>();
         for (int i = 0; i < fileInfos.length; i++) {
             map.put(fileInfos[i].key, fileInfos[i]);
