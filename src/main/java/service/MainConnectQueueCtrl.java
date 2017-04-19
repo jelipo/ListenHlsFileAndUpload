@@ -13,7 +13,7 @@ import java.util.concurrent.BlockingQueue;
 public class MainConnectQueueCtrl implements Runnable {
 
     private BlockingQueue<String> queue;
-    private Socket socket;
+    private volatile Socket socket;
     private long lastConnectTime = 0;
     private int heartBeatTime;
 
@@ -75,6 +75,7 @@ public class MainConnectQueueCtrl implements Runnable {
      */
     private void checkLastGetWordTime() {
         long nowTime=System.currentTimeMillis();
+        System.out.println("检查上一次获得消息时间，last:"+lastConnectTime+"。now:"+nowTime);
         if (lastConnectTime==0){
             markGetWordTime();
             return;
