@@ -40,7 +40,7 @@ public class MainConnectQueueCtrl implements Runnable {
      * @param needTo 从服务器发送过来的消息内容
      */
     private void select(String needTo) {
-        markGetWordTime();
+
         switch (needTo) {
             case "connectServer":
                 connectServer();
@@ -68,6 +68,7 @@ public class MainConnectQueueCtrl implements Runnable {
      */
     private void heartbeatEcho() {
         System.out.println("服务器返回心跳包响应");
+        markGetWordTime();
     }
 
     /**
@@ -148,6 +149,7 @@ public class MainConnectQueueCtrl implements Runnable {
     final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "LED", PinState.HIGH);
 
     private void switchLED() {
+        markGetWordTime();
         System.out.println("开/关");
         pin.toggle();
     }
