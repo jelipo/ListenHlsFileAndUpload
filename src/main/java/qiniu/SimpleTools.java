@@ -85,13 +85,15 @@ public class SimpleTools {
             //参数三：marker    上一次获取文件列表时返回的 marker
             //参数四：limit     每次迭代的长度限制，最大1000，推荐值 100
             //参数五：delimiter 指定目录分隔符，列出所有公共前缀（模拟列出目录效果）。缺省值为空字符串
+
             fileListing = bucketManager.listFiles(bucketName, prefix, marker, limit, delimiter);
             list.add(fileListing);
             if (fileListing.items.length >= limit) {
                 getList(list, auth, bucketName, prefix, fileListing.marker, limit, delimiter);
             }
         } catch (QiniuException e) {
-            e.printStackTrace();
+            System.out.println("获取云存储文件列表时异常，尝试重新连接");
+            getList(list, auth, bucketName, prefix, fileListing.marker, limit, delimiter);
         }
         return list;
     }

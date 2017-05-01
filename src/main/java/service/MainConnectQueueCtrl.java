@@ -72,7 +72,7 @@ public class MainConnectQueueCtrl implements Runnable {
     }
 
     /**
-     * 使用当前时间与上一次发送过来消息的时间做计算，如果差值超过发送心跳包的3倍，则判定连接异常断开，并关闭socket连接
+     * 使用当前时间与上一次发送过来消息的时间做计算，如果差值超过发送心跳包间隔时间的3倍，则判定连接异常断开，并关闭socket连接
      */
     private void checkLastGetWordTime() {
         long nowTime=System.currentTimeMillis();
